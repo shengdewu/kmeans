@@ -4,17 +4,18 @@ import numpy as np
 
 if '__main__' == __name__:
     load = kmeans.tool()
-    dataMat = load.loadData('./testData/testSet.txt')
+    dataMat = load.loadData('./testData/testSet2.txt')
 
     #print(dataMat)
 
     alg = kmeans.kmeans()
-    center = alg.randomCenter(dataMat, 10)
+    # center = alg.randomCenter(dataMat, 10)
 
-    k = 2
+    k = 3
 
-    center, cluster = alg.kmeans(dataMat, k)
+    #center, cluster = alg.kmeans(dataMat, k)
 
+    center, cluster = alg.biKmeans(dataMat, k)
     color = ['ro', 'bo', 'go', 'r+']
     for i in range(k):
         data = dataMat[np.nonzero(cluster[:,0] == i)[0]]

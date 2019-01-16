@@ -50,8 +50,8 @@ class kmeans(object):
     def biKmeans(self, dataSet, k):
         m, n = np.shape(dataSet)
         center = np.mean(dataSet, axis=0)
-        centerList = [center]
-        cluster = np.mat(np.zeros(m, 2))
+        centerList = [center.tolist()[0]]
+        cluster = np.mat(np.zeros((m, 2)))
         for i in range(m):
             cluster[i,1] += self.disElua(center, dataSet[i,0])
 
@@ -64,15 +64,17 @@ class kmeans(object):
                 data = dataSet[np.nonzero(cluster[:,0] == i)[0]]
                 splitCenter, splitCluster = self.kmeans(data, 2)
                 splitErr = np.sum(splitCenter[:,1])
-                noSpitErr = np.sum(cluster[np.nonzero(cluster[:,0] == i)[0], 1])
+                noSpitErr = np.sum(cluster[np.nonzero(cluster[:,0] != i)[0], 1])
                 if splitErr + noSpitErr < err:
                     err = splitErr + noSpitErr
                     bestCenter = splitCenter
-                    bestCluster = splitCluster
+                    bestCluster = splitCluster.copy()
                     bestIndex = i
 
-            centerList[bestIndex] = bestCenter[0,:]
-            centerList.append(bestCenter[1,:])
+            bestCluster[np.nonzero(bestCluster[:,0] == 0)[0], 0] = bestIndex
+            bestCluster[np.nonzero(bestCluster[:,0] == 1)[0], 0] = len(centerList)
+            centerList[bestIndex] = bestCenter[0,:].tolist()[0]
+            centerList.append(bestCenter[1,:].tolist()[0])
             cluster[np.nonzero(cluster[:,0] == bestIndex)[0], :] = bestCluster
 
         return np.mat(centerList), cluster
